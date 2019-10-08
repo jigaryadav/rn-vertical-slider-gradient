@@ -31,7 +31,7 @@ type Props = {
   ballIndicatorColor?: string,
   ballIndicatorWidth?: number,
   ballIndicatorPosition?: number,
-  ballIndicatorTextColor?: string
+  ballIndicatorTextColor?: string,
   animationDuration?: number,
 
 };
