@@ -32,6 +32,8 @@ type Props = {
   ballIndicatorWidth?: number,
   ballIndicatorPosition?: number,
   ballIndicatorTextColor?: string
+  animationDuration?: number,
+
 };
 
 type State = {
@@ -117,12 +119,12 @@ export default class VerticalSlider extends Component<Props, State> {
   }
 
   _changeState(value: number): void {
-    const { height, ballIndicatorWidth } = this.props;
+    const { height, ballIndicatorWidth, animationDuration } = this.props;
     const sliderHeight = this._getSliderHeight(value);
     let ballPosition = sliderHeight;
     const ballHeight = (ballIndicatorWidth ? ballIndicatorWidth : 48) / 2;
     if (ballPosition + ballHeight > height) {
-      ballPosition = height - ballHeight * 2;
+      ballPosition = height - ballHeight * 1;
     } else if (ballPosition - ballHeight <= 0) {
       ballPosition = 0;
     } else {
@@ -131,11 +133,13 @@ export default class VerticalSlider extends Component<Props, State> {
     Animated.parallel([
       Animated.timing(this.state.sliderHeight, {
         toValue: sliderHeight,
-        easing: Easing.linear
+        easing: Easing.linear,
+        duration: animationDuration || 50
       }),
       Animated.timing(this.state.ballHeight, {
         toValue: ballPosition,
-        easing: Easing.linear
+        easing: Easing.linear,
+        duration: animationDuration || 50
       })
     ]).start();
     this.setState({ value });
@@ -230,36 +234,38 @@ export default class VerticalSlider extends Component<Props, State> {
               style={styles.linearGradient}
             />
           </Animated.View>
-        </View>
-        {this.props.showBallIndicator ? (
-          <Animated.View
-            style={[
-              styles.ball,
-              styles.shadow,
-              {
-                width: ballIndicatorWidth ? ballIndicatorWidth : 48,
-                height: ballIndicatorWidth ? ballIndicatorWidth : 48,
-                borderRadius: ballIndicatorWidth ? ballIndicatorWidth / 2 : 24,
-                bottom: this.state.ballHeight,
-                left: ballIndicatorPosition ? ballIndicatorPosition : -60,
-                backgroundColor: this._fetchBallIndicatorColor()
-              }
-            ]}
-          >
-            <Text
+          {this.props.showBallIndicator ? (
+            <Animated.View
               style={[
-                styles.ballText,
+                styles.ball,
+                styles.shadow,
                 {
-                  color: ballIndicatorTextColor
-                    ? ballIndicatorTextColor
-                    : "#000000"
+                  width: ballIndicatorWidth ? ballIndicatorWidth : 48,
+                  height: ballIndicatorWidth ? ballIndicatorWidth : 48,
+                  borderRadius: ballIndicatorWidth
+                    ? ballIndicatorWidth / 2
+                    : 24,
+                  bottom: this.state.ballHeight,
+                  left: ballIndicatorPosition ? ballIndicatorPosition : -60,
+                  backgroundColor: this._fetchBallIndicatorColor()
                 }
               ]}
             >
-              {this.state.value}
-            </Text>
-          </Animated.View>
-        ) : null}
+              <Text
+                style={[
+                  styles.ballText,
+                  {
+                    color: ballIndicatorTextColor
+                      ? ballIndicatorTextColor
+                      : "#000000"
+                  }
+                ]}
+              >
+                {this.state.value}
+              </Text>
+            </Animated.View>
+          ) : null}
+        </View>
       </View>
     );
   }
@@ -285,7 +291,7 @@ const styles = StyleSheet.create({
     fontWeight: "900"
   },
   container: {
-    overflow: "hidden"
+    // overflow: 'hidden',
   },
   slider: {
     position: "absolute",
