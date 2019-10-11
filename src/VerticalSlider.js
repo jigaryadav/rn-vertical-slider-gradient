@@ -3,16 +3,17 @@
  * @flow
  */
 
-import React, { Component } from "react";
+import React, {Component} from 'react';
 import {
   View,
   Text,
   Animated,
   PanResponder,
   StyleSheet,
-  Easing
-} from "react-native";
-import LinearGradient from "react-native-linear-gradient";
+  Easing,
+  TouchableOpacity,
+} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
 type Props = {
   value: number,
@@ -33,14 +34,13 @@ type Props = {
   ballIndicatorPosition?: number,
   ballIndicatorTextColor?: string,
   animationDuration?: number,
-
 };
 
 type State = {
   value: number,
   sliderHeight: any,
   ballHeight: any,
-  panResponder: any
+  panResponder: any,
 };
 
 export default class VerticalSlider extends Component<Props, State> {
@@ -85,19 +85,19 @@ export default class VerticalSlider extends Component<Props, State> {
         if (this.props.onComplete) {
           this.props.onComplete(value);
         }
-      }
+      },
     });
 
     this.state = {
       value: props.value,
       sliderHeight: new Animated.Value(0),
       ballHeight: new Animated.Value(0),
-      panResponder
+      panResponder,
     };
   }
 
   _fetchNewValueFromGesture(gestureState: any): number {
-    const { min, max, step, height } = this.props;
+    const {min, max, step, height} = this.props;
     const ratio = -gestureState.dy / height;
     const diff = max - min;
     if (step) {
@@ -105,8 +105,8 @@ export default class VerticalSlider extends Component<Props, State> {
         min,
         Math.min(
           max,
-          this._moveStartValue + Math.round((ratio * diff) / step) * step
-        )
+          this._moveStartValue + Math.round((ratio * diff) / step) * step,
+        ),
       );
     }
     let value = Math.max(min, this._moveStartValue + ratio * diff);
@@ -114,12 +114,12 @@ export default class VerticalSlider extends Component<Props, State> {
   }
 
   _getSliderHeight(value: number): number {
-    const { min, max, height } = this.props;
+    const {min, max, height} = this.props;
     return ((value - min) * height) / (max - min);
   }
 
   _changeState(value: number): void {
-    const { height, ballIndicatorWidth, animationDuration } = this.props;
+    const {height, ballIndicatorWidth, animationDuration} = this.props;
     const sliderHeight = this._getSliderHeight(value);
     let ballPosition = sliderHeight;
     const ballHeight = (ballIndicatorWidth ? ballIndicatorWidth : 48) / 2;
@@ -134,26 +134,26 @@ export default class VerticalSlider extends Component<Props, State> {
       Animated.timing(this.state.sliderHeight, {
         toValue: sliderHeight,
         easing: Easing.linear,
-        duration: animationDuration || 50
+        duration: animationDuration || 50,
       }),
       Animated.timing(this.state.ballHeight, {
         toValue: ballPosition,
         easing: Easing.linear,
-        duration: animationDuration || 50
-      })
+        duration: animationDuration || 50,
+      }),
     ]).start();
-    this.setState({ value });
+    this.setState({value});
   }
 
   _fetchBallIndicatorColor(): string {
-    const { value } = this.state;
-    const { max, min, ballIndicatorColor } = this.props;
+    const {value} = this.state;
+    const {max, min, ballIndicatorColor} = this.props;
     if (ballIndicatorColor) {
       return ballIndicatorColor;
     }
     const minimumTrackTintColor = this.props.minimumTrackTintColor
       ? this.props.minimumTrackTintColor
-      : ["#000000"];
+      : ['#000000'];
     const colorLength = minimumTrackTintColor.length - 1;
     const percentage = (value / (max - min)) * 100;
     const divideValue = 100 / colorLength;
@@ -170,11 +170,11 @@ export default class VerticalSlider extends Component<Props, State> {
     if (minimumTrackTintColor[colorIndex]) {
       return minimumTrackTintColor[colorIndex];
     }
-    return "#000000";
+    return '#000000';
   }
 
   componentDidMount(): void {
-    const { value } = this.props;
+    const {value} = this.props;
     if (value) {
       this._changeState(value);
     }
@@ -184,6 +184,7 @@ export default class VerticalSlider extends Component<Props, State> {
     const {
       value,
       disabled,
+      onButtonPress,
       min,
       max,
       onChange,
@@ -197,10 +198,10 @@ export default class VerticalSlider extends Component<Props, State> {
       ballIndicatorColor,
       ballIndicatorWidth,
       ballIndicatorPosition,
-      ballIndicatorTextColor
+      ballIndicatorTextColor,
     } = this.props;
     return (
-      <View style={[{ height, width, borderRadius }]}>
+      <View style={[{height, width, borderRadius}]}>
         <View
           style={[
             styles.container,
@@ -211,26 +212,24 @@ export default class VerticalSlider extends Component<Props, State> {
               borderRadius,
               backgroundColor: maximumTrackTintColor
                 ? maximumTrackTintColor
-                : "#ECECEC"
-            }
+                : '#ECECEC',
+            },
           ]}
-          {...this.state.panResponder.panHandlers}
-        >
+          {...this.state.panResponder.panHandlers}>
           <Animated.View
             style={[
               styles.slider,
               {
                 height: this.state.sliderHeight,
-                width
-              }
-            ]}
-          >
+                width,
+              },
+            ]}>
             <LinearGradient
               colors={
-                minimumTrackTintColor ? minimumTrackTintColor : ["#000000"]
+                minimumTrackTintColor ? minimumTrackTintColor : ['#000000']
               }
-              start={{ x: 1.0, y: 1.0 }}
-              end={{ x: 0.0, y: 0.0 }}
+              start={{x: 1.0, y: 1.0}}
+              end={{x: 0.0, y: 0.0}}
               style={styles.linearGradient}
             />
           </Animated.View>
@@ -247,22 +246,24 @@ export default class VerticalSlider extends Component<Props, State> {
                     : 24,
                   bottom: this.state.ballHeight,
                   left: ballIndicatorPosition ? ballIndicatorPosition : -60,
-                  backgroundColor: this._fetchBallIndicatorColor()
-                }
-              ]}
-            >
-              <Text
-                style={[
-                  styles.ballText,
-                  {
-                    color: ballIndicatorTextColor
-                      ? ballIndicatorTextColor
-                      : "#000000"
-                  }
-                ]}
-              >
-                {this.state.value}
-              </Text>
+                  backgroundColor: this._fetchBallIndicatorColor(),
+                },
+              ]}>
+              <TouchableOpacity
+                disabled={!disabled}
+                onPressIn={onButtonPress || null}>
+                <Text
+                  style={[
+                    styles.ballText,
+                    {
+                      color: ballIndicatorTextColor
+                        ? ballIndicatorTextColor
+                        : '#000000',
+                    },
+                  ]}>
+                  {this.state.value}
+                </Text>
+              </TouchableOpacity>
             </Animated.View>
           ) : null}
         </View>
@@ -273,32 +274,32 @@ export default class VerticalSlider extends Component<Props, State> {
 
 const styles = StyleSheet.create({
   shadow: {
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 1
+      height: 1,
     },
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
-    elevation: 3
+    elevation: 3,
   },
   ball: {
-    position: "absolute",
-    alignItems: "center",
-    justifyContent: "center"
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   ballText: {
-    fontWeight: "900"
+    fontWeight: '900',
   },
   container: {
     // overflow: 'hidden',
   },
   slider: {
-    position: "absolute",
-    bottom: 0
+    position: 'absolute',
+    bottom: 0,
   },
   linearGradient: {
-    width: "100%",
-    height: "100%"
-  }
+    width: '100%',
+    height: '100%',
+  },
 });
