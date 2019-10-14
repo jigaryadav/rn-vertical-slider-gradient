@@ -250,7 +250,6 @@ export default class VerticalSlider extends Component<Props, State> {
             ]}>
             <TouchableOpacity
               hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
-              style={{borderWidth: 1, borderColor: 'red'}}
               disabled={!disabled}
               onPressIn={onButtonPress || null}>
               <Text
@@ -290,6 +289,7 @@ const styles = StyleSheet.create({
   },
   ballText: {
     fontWeight: '900',
+    fontSize: 13,
   },
   container: {
     // overflow: 'hidden',
