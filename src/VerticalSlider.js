@@ -214,8 +214,7 @@ export default class VerticalSlider extends Component<Props, State> {
                 ? maximumTrackTintColor
                 : '#ECECEC',
             },
-          ]}
-          {...this.state.panResponder.panHandlers}>
+          ]}>
           <Animated.View
             style={[
               styles.slider,
@@ -233,40 +232,41 @@ export default class VerticalSlider extends Component<Props, State> {
               style={styles.linearGradient}
             />
           </Animated.View>
-          {this.props.showBallIndicator ? (
-            <Animated.View
-              style={[
-                styles.ball,
-                styles.shadow,
-                {
-                  width: ballIndicatorWidth ? ballIndicatorWidth : 48,
-                  height: ballIndicatorWidth ? ballIndicatorWidth : 48,
-                  borderRadius: ballIndicatorWidth
-                    ? ballIndicatorWidth / 2
-                    : 24,
-                  bottom: this.state.ballHeight,
-                  left: ballIndicatorPosition ? ballIndicatorPosition : -60,
-                  backgroundColor: this._fetchBallIndicatorColor(),
-                },
-              ]}>
-              <TouchableOpacity
-                disabled={!disabled}
-                onPressIn={onButtonPress || null}>
-                <Text
-                  style={[
-                    styles.ballText,
-                    {
-                      color: ballIndicatorTextColor
-                        ? ballIndicatorTextColor
-                        : '#000000',
-                    },
-                  ]}>
-                  {this.state.value}
-                </Text>
-              </TouchableOpacity>
-            </Animated.View>
-          ) : null}
         </View>
+        {this.props.showBallIndicator ? (
+          <Animated.View
+            {...this.state.panResponder.panHandlers}
+            style={[
+              styles.ball,
+              styles.shadow,
+              {
+                width: ballIndicatorWidth ? ballIndicatorWidth : 48,
+                height: ballIndicatorWidth ? ballIndicatorWidth : 48,
+                borderRadius: ballIndicatorWidth ? ballIndicatorWidth / 2 : 24,
+                bottom: this.state.ballHeight,
+                left: ballIndicatorPosition ? ballIndicatorPosition : -60,
+                backgroundColor: this._fetchBallIndicatorColor(),
+              },
+            ]}>
+            <TouchableOpacity
+              hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
+              style={{borderWidth: 1, borderColor: 'red'}}
+              disabled={!disabled}
+              onPressIn={onButtonPress || null}>
+              <Text
+                style={[
+                  styles.ballText,
+                  {
+                    color: ballIndicatorTextColor
+                      ? ballIndicatorTextColor
+                      : '#000000',
+                  },
+                ]}>
+                {this.state.value}
+              </Text>
+            </TouchableOpacity>
+          </Animated.View>
+        ) : null}
       </View>
     );
   }
