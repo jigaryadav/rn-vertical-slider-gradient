@@ -54,6 +54,7 @@ export default class VerticalSlider extends Component<Props, State> {
       onMoveShouldSetPanResponder: () => false,
       onPanResponderGrant: () => {
         this._moveStartValue = this.state.value;
+        this.setState({showText: true});
       },
       onPanResponderMove: (event, gestureState) => {
         if (this.props.disabled) {
@@ -73,6 +74,7 @@ export default class VerticalSlider extends Component<Props, State> {
         this._changeState(value);
         if (this.props.onComplete) {
           this.props.onComplete(value);
+          this.setState({showText: false});
         }
       },
       onPanResponderTerminationRequest: () => false,
@@ -93,6 +95,7 @@ export default class VerticalSlider extends Component<Props, State> {
       sliderHeight: new Animated.Value(0),
       ballHeight: new Animated.Value(0),
       panResponder,
+      showText: false,
     };
   }
 
@@ -265,6 +268,11 @@ export default class VerticalSlider extends Component<Props, State> {
               </Text>
             </TouchableOpacity>
           </Animated.View>
+        ) : null}
+        {this.state.showText ? (
+          <Text style={{textAlign: 'center', width: 30}}>
+            {this.state.value}%
+          </Text>
         ) : null}
       </View>
     );
